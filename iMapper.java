@@ -8,8 +8,6 @@ public interface iMapper extends Remote {
   
   /* begins a mapping task on the machine where it's called on?
    * what is the name param? is probably useful for master to track mappers and know which ones have terminated?
-   * 
-   * 
    */ 
   public iMapper createMapTask(String name) throws RemoteException, AlreadyBoundException;
   
