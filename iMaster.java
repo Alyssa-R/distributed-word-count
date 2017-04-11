@@ -9,7 +9,6 @@ public interface iMaster extends Remote {
 
   /* sends back customized array of reducers to each mapper, based off of the keys the mapper found
    * step 5 (incl parts a and b) 
-   * 
    */ 
   public iReducer[] getReducers(String[] keys) throws RemoteException, AlreadyBoundException;
   
