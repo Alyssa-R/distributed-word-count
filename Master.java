@@ -30,7 +30,10 @@ public class Master implements iMaster{
    * stores in the final output file
    * reducer process terminated immediately after this method called
    */  
-  public void receiveOutput (String key, int value) throws RemoteException{}
+  public void receiveOutput (String key, int value) throws RemoteException{
+    //this has to do with I/O and I don't know how right now, I think there's a class called FileWriter?
+  
+  }
   
   /*
    * main method
@@ -44,6 +47,24 @@ public class Master implements iMaster{
      * }
      * wait for semaphore that signifies output file is fully written and do something to show of output?
      */ 
+    
+    Scanner scan_file = new Scanner();
+    String next_line = "";
+    
+    while(scan_file.hasNext()){
+      next_line = scan_file.nextLine();
+      iMapper mapper = getNextMapper(); //lol see comment above getNextMapper()
+      mapper.processInput(next_line);
+    }
+
+  }
+  
+  /*i have no idea how to code this, just go through the ip addresses? 
+   * find a free mapper, maybe you have to make it? and return it from CreateMapTask?
+   * wait maybe just don't code this and call a createMapTask off the bat from run directly
+   * idk man idk
+   */ 
+  private iMapper getNextMapper(){
   
   }
 
