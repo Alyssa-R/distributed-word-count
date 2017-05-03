@@ -1,27 +1,23 @@
 public class Master implements iMaster{
 
-  int maps;
-  int doneMaps;
-  /*
-   * Constructor
-   */ 
   
-  public Master(String[] arrayOfIPAddresses?) {
-  //initialize total number of mappers
+  public Master() {
+   //not sure what this needs to take in, don't think it needs anything 
   }
+  
   
   /* sends back customized array of reducers to each mapper, based off of the keys the mapper found
    * step 5 (incl parts a and b) 
    */ 
   public iReducer[] getReducers(String[] keys) throws RemoteException, AlreadyBoundException{}
   
-  /*does not return anything
-   * should it take in a certain mapper to know which one to mark as done?
+  /* does not return anything
    * happens to mapper after sending data to reducers
    */ 
   public void markMapperDone() throws RemoteException{
-    doneMaps++; //(????!!)
-    //if all are done, do something that lets reducers know, starting to near the end of the whole shebang
+    //if all are done, do something that lets reducers know, start to terminate reducers
+    //when terminating reducers, put their key and return value in the output file (unless reducers should directly write to file themselves)
+    //so I guess counts how many have done and compares it to have 
     
   }
   
@@ -35,37 +31,48 @@ public class Master implements iMaster{
   
   }
   
-  /*
-   * main method
-   */ 
+
+  private iMapper getNextMapper(){
+    //createMapTask??
+  }
   
-  public void run(){
-    /*register and bind
-     * go get mapper/reducer objects from IPs of other machines in cluster
+  
+  public void run(iMapper map, iReducer reduce){
+    /*
+     * create Master instance to get mapper/reducer objects from IPs of other machines (constructor)
+     * 
      * while (input.hasNextLine){
      *     scan a line, send it to mapper (createMapTask), process it
+     *     (mapper sends it to a reducer)
      * }
-     * wait for semaphore that signifies output file is fully written and do something to show of output?
+     * wait for semaphore that signifies output file is fully written?-->deal with file I/O
+     * 
      */ 
     
+    
+    //I have no memory of the below code
     Scanner scan_file = new Scanner();
     String next_line = "";
     
     while(scan_file.hasNext()){
       next_line = scan_file.nextLine();
-      iMapper mapper = getNextMapper(); //lol see comment above getNextMapper()
+      iMapper mapper = getNextMapper();
       mapper.processInput(next_line);
     }
 
   }
   
-  /*i have no idea how to code this, just go through the ip addresses? 
-   * find a free mapper, maybe you have to make it? and return it from CreateMapTask?
-   * wait maybe just don't code this and call a createMapTask off the bat from run directly
-   * idk man idk
-   */ 
-  private iMapper getNextMapper(){
+  //actual main
+  public static void main(String[] args){
+  /*    
+    register and bind this part of the rmi
+    take in ip addresses of token mapper and reducer from args
+        get their stubs (mapper/reducer objs)
+    pass those objs to run()
+  */
+
   
   }
+  
 
 }

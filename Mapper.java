@@ -4,19 +4,19 @@ public class Mapper implements iMapper {
   
   
   //dummy constructor? idk I feel like createMapTask is the real constructor here
+  //no actually createMapTask just exists to create a constructed object!!
   public Mapper(String n){
     name = n;
   }
   
-  /* begins a mapping task on the machine where it's called on?
-   * what is the name param? is probably useful for master to track mappers and know which ones have terminated?
+  /* returns newly constructed mapper
    */ 
   public iMapper createMapTask(String name) throws RemoteException, AlreadyBoundException{
     return Mapper(name);
   }
   
-  /* does actual word counting and saves the hashtable somewhere locally??
-   * lets master know that it has intermediate data when done?
+  /* does actual word counting and saves the hashtable somewhere locally
+   * lets master know that it has intermediate data when done
    * 
    */ 
   public void processInput (String input, iMaster theMaster) throws RemoteException, AlreadyBoundException {
