@@ -39,11 +39,11 @@ public class Mapper implements iMapper {
     String [] keys = keySet.toArray(new String[keySet.size()]); //convert to String array
     iReducer[] reducers = theMaster.getReducers(keys);
     iReducer r = reducers[0];
-    int val = 0;
+    int total = 0;
     for(int i = 0; i<keys.length; i++){
       r = reducers[i];
-      val = results.getValue(keys[i]);
-      r.receiveValues(val);
+      total = results.getValue(keys[i]);
+      r.receiveValues(total);
     }
     
     theMaster.markMapperDone();
