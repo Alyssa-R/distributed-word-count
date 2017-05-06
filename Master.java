@@ -1,4 +1,16 @@
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.FileReader;
+import java.io.FileWriter;
+
+
 public class Master implements iMaster{
+	
+	private Master master;
+	private static String[] clientIds;
+	private int mappersCount = 0;
+	private int reducersCount = 0;
+	private BufferedWriter outputFile;
 
   
   public Master() {
@@ -22,12 +34,19 @@ public class Master implements iMaster{
   }
   
   /* 
-   * called by reducer onto master after reducer has finished work, to consildate final data
+   * called by reducer onto master after reducer has finished work, to consolidate final data
    * stores in the final output file
    * reducer process terminated immediately after this method called
    */  
   public void receiveOutput (String key, int value) throws RemoteException{
     //this has to do with I/O and I don't know how right now, I think there's a class called FileWriter?
+	  reducersCount--;
+	  
+	  //check if file needs to be created
+	  if (outputFile == null) {
+		  outputFile = new BufferedWriter(new FileWriter("wordcount.txt"));
+	  }
+	  outputFile.write(key + " : " + value + " ");
   
   }
   
