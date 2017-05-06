@@ -2,15 +2,15 @@
 public class Reducer implements iReducer {
   iMapper master;
   int total;
-  String key;
+  String word;
   
   public Reducer(String k, iMaster m){
     total = 0;
     master = m;
-    key = k;
+    word = k;
   }
   
-  public iReducer createReduceTalk(String key, iMaster master) throws RemoteException, AlreadyBoundException{
+  public iReducer createReduceTask(String key, iMaster master) throws RemoteException, AlreadyBoundException{
     return Reducer(key, master);
   }
   
@@ -19,7 +19,7 @@ public class Reducer implements iReducer {
   }
   
   public int terminate() throws RemoteException{
-    //should this write to a file?
+    master.receiveOutput(word, total);
     return total;
   }
   
