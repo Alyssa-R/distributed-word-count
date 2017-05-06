@@ -23,7 +23,28 @@ public class Reducer implements iReducer {
     return total;
   }
   
-  // missing a main method, but also don't think one is needed tbh, master can call the start and tell the
-  //result of terminate to write to the correct place
+  /*
+   * Main taken almost directly from main method on Assignment 3
+   */
+  public static void main (String args[]) {
+	  try {
+		  // Initialize account info
+		  String selfPort = args[0];
+		  String selfIp = InetAddress.getLocalHost().getHostAddress();
+		  
+		  // Get the local registry
+		  Registry registry = LocateRegistry.getRegistry(selfIp, Integer.parseInt(selfPort));
+		  
+		  // Set up reducer
+		  Reducer reducer = new Reducer(); //OK to do?
+		  
+		  // Bind the remote object's stub in the registry
+		  registry.bind("Reducer", reducer);
+		  System.out.println("Reducer ready")
+	  } catch (Exception e) {
+		  System.err.println("Reducer connection exception: " + e.toString());
+		  e.printStackTrace();
+	  }
+  }
 
 }
