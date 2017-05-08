@@ -1,10 +1,23 @@
+package hadoop;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileReader;
 import java.io.FileWriter;
 
+import java.rmi.registry.Registry;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.RemoteException;
+import java.rmi.server.UnicastRemoteObject;
 
-public class Master implements iMaster{
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+
+import java.util.Hashtable;
+import java.util.Arrays;
+
+
+public class Master extends UnicastRemoteObject implements iMaster{
 
 	private static Master master;
 	private static String[] clientIds;
@@ -31,10 +44,13 @@ public class Master implements iMaster{
 		iReducer[] reducer = new iReducer[keys.length];
 		for (int i = 0; i < keys.length; i++) {
 			iReducer reducer;
-			if !(reducerHashtable.containsKey(keys[i])) {
-				reducer = reducerListings.get(clientIds[??]).createReduceTask(keys[i], master); //?????
-				reducerHashtable.put(keys[i], reducer);
+			if (!reducerHashtable.containsKey(keys[i])) {
 				reducersCount++;
+				reducer = reducerListings.get(clientIds[reducerIndex]).createReduceTask(keys[i], master);
+				reducerHashtable.put(keys[i], reducer);
+				reducerIndex++;
+				reducerIndex = reducerIndex%clientIds.length; //if index is above clientIds.length, reset index to 0
+
 			}
 		}
 
@@ -82,7 +98,7 @@ public class Master implements iMaster{
 		iMapper mapper = mapperListings.get(clientIds[mapperTotal]).createMapTask(clientIds[mapperTotal]);
 		mapper.processInput(line, master);
 		mapperIndex++;
-		mapperIndex = mapperTotal%clientIds.length;
+		mapperIndex = mapperTotal%clientIds.length; //if index is above clientIds.length, reset index to 0
 	}
 
 
@@ -97,10 +113,9 @@ public class Master implements iMaster{
 		 * wait for semaphore that signifies output file is fully written?-->deal with file I/O
 		 * 
 		 */ 
-		Scanner scan_file = new Scanner();
-		String next_line = "";
+
 		inputFile = new BufferedReader(new FileReader("./poems/4-MASKS.txt"));
-		
+
 		String line = inputFile.readLine();
 		while (line != null) {
 			getNextMapper(line);
@@ -144,13 +159,39 @@ public class Master implements iMaster{
 			// Connect from clientIps array
 
 
+			// Connect to peers from ips in clientIds
+			mapperDirectory = new Hashtable<String, iMapper>();
+			reducerDirectory = new Hashtable<String, iReducer>();
+			for (int i = 0; i < clientIds.length; i++) {
+				String[] parts = clientIds[i].split(":");
+				String nodeIp = parts[0];
+				int nodePort = Integer.parseInt(parts[1]);
+				try{
+					Registry nodeRegistry = LocateRegistry.getRegistry(nodeIp, nodePort);
+					iMapper mapperStub = (iMapper) nodeRegistry.lookup("Mapper");
+					iReducer reducerStub = (iReducer) nodeRegistry.lookup("Reducer");
+					mapperDirectory.put(clientIds[i], mapperStub);
+					reducerDirectory.put(clientIds[i], reducerStub);
+				} catch (RemoteException e) {
+					System.err.println("Connection exception: " + e.toString());
+					e.printStackTrace();
+				}
+			}
+			master.start();
 		} catch (Exception e) {
-			System.err.println("Reducer connection exception: " + e.toString());
+			System.err.println("Connection exception: " + e.toString());
 			e.printStackTrace();
 		}
 
 
+
+	} catch (Exception e) {
+		System.err.println("Reducer connection exception: " + e.toString());
+		e.printStackTrace();
 	}
+
+
+}
 
 
 }
