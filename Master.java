@@ -15,8 +15,8 @@ public class Master implements iMaster{
 	private Hashtable<String, iReducer> reducerHashtable;
 	private static Hashtable<String, iMapper> mapperListings;
 	private static Hashtable<String, iReducer> reducerListings;
-	private int mapperTotal = 0;
-	private int reducerTotal = 0;
+	private int mapperIndex = 0;
+	private int reducerIndex = 0;
 
 
 	public Master() {
@@ -80,6 +80,9 @@ public class Master implements iMaster{
 	private iMapper getNextMapper(String line){
 		mappersCount++;
 		iMapper mapper = mapperListings.get(clientIds[mapperTotal]).createMapTask(clientIds[mapperTotal]);
+		mapper.processInput(line, master);
+		mapperIndex++;
+		mapperIndex = mapperTotal%clientIds.length;
 	}
 
 
