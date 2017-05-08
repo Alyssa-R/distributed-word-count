@@ -6,11 +6,14 @@ import java.io.FileWriter;
 
 public class Master implements iMaster{
 	
-	private Master master;
+	private static Master master;
 	private static String[] clientIds;
 	private int mappersCount = 0;
 	private int reducersCount = 0;
 	private BufferedWriter outputFile;
+	private Hashtable<String, iReducer> reducerHashtable;
+	private static Hashtable<String, iMapper> mapperListings;
+	private static Hashtable<String, iReducer> mapperListings;
 
   
   public Master() {
@@ -21,7 +24,20 @@ public class Master implements iMaster{
   /* sends back customized array of reducers to each mapper, based off of the keys the mapper found
    * step 5 (incl parts a and b) 
    */ 
-  public iReducer[] getReducers(String[] keys) throws RemoteException, AlreadyBoundException{}
+  public iReducer[] getReducers(String[] keys) throws RemoteException, AlreadyBoundException{
+	  iReducer[] reducer = new iReducer[keys.length];
+	  for (int i = 0; i < keys.length; i++) {
+		  iReducer reducer;
+		  if !(reducerHashtable.containsKey(keys[i])) {
+			  reducer = reducerListings.get(clientIds[??]).createReduceTask(keys[i], master); //?????
+			  reducerHashtable.put(keys[i], reducer);
+			  reducersCount++;
+		  }
+	  }
+	  
+	  
+  }
+
   
   /* does not return anything
    * happens to mapper after sending data to reducers
@@ -89,6 +105,30 @@ public class Master implements iMaster{
         get their stubs (mapper/reducer objs)
     pass those objs to run()
   */
+	  try {
+	  
+		  // Initialize info
+		  String selfPort = args[0];
+		  String selfIp = InetAddress.getLocalHost().getHostAddress();
+		  clientIds = Arrays.copyOfRange(args, 1, args.length);
+		  
+		  // Get the local registry
+		  Registry registry = LocateRegistry.getRegistry(selfIp, Integer.parseInt(selfPort));
+		  
+		  // Set up master
+		  master = new Master();
+		  
+		  // Bind the remote object's stub in the registry
+		  registry.bind("Master", master);
+		  System.out.println("Master ready");
+		  
+		  // Connect from clientIps array
+		  
+		  
+	  } catch (Exception e) {
+		  System.err.println("Reducer connection exception: " + e.toString());
+		  e.printStackTrace();
+  }
 
   
   }
