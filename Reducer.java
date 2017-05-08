@@ -1,4 +1,16 @@
-public class Reducer implements iReducer {
+package hadoop;
+
+import java.rmi.registry.Registry;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.RemoteException;
+import java.rmi.server.UnicastRemoteObject;
+
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+
+import java.util.Hashtable;
+
+public class Reducer extends UnicastRemoteObject implements iReducer {
 	iMapper master;
 	int total;
 	String word;
