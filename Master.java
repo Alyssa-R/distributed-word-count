@@ -35,7 +35,6 @@ public class Master implements iMaster{
 		  }
 	  }
 	  
-	  
   }
 
   
@@ -46,6 +45,14 @@ public class Master implements iMaster{
     //if all are done, do something that lets reducers know, start to terminate reducers
     //when terminating reducers, put their key and return value in the output file (unless reducers should directly write to file themselves)
     //so I guess counts how many have done and compares it to have 
+	  mappersRunning--;
+	  
+	  //check if mapping is done
+	  if (mappersRunning == 0) {
+		  for (int i = 0; i < reducerHastable.size(); i++) {
+			  reducerMapping.get(reducerMapping[i]).terminate(); //syntax?
+		  }
+	  }
     
   }
   
