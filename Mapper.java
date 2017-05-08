@@ -1,13 +1,24 @@
-import java.rmi.registry.Registry;
+package hadoop;
 
-public class Mapper implements iMapper {
+import java.rmi.registry.Registry;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.RemoteException;
+import java.rmi.server.UnicastRemoteObject;
+
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+
+import java.util.Hashtable;
+import java.util.Set;
+
+public class Mapper extends UnicastRemoteObject implements iMapper {
 
 	private String name;
 
 
 	//dummy constructor? idk I feel like createMapTask is the real constructor here
 	//no actually createMapTask just exists to create a constructed object!!
-	public Mapper(String n) throws RemoteException() {
+	public Mapper(String n) throws RemoteException {
 		name = n;
 	}
 
@@ -59,7 +70,7 @@ public class Mapper implements iMapper {
 
 		for(int i=0; i<words.length; i++){
 			w = words[i];
-			if results.containsKey(w){
+			if (results.containsKey(w)) {
 				results.put(w, table.get(w)+1);
 			}
 			else{
